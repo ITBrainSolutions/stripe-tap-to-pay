@@ -99,6 +99,27 @@ class TerminalPlugin : FlutterPlugin, ActivityAware, TerminalPlatformApi {
             return
         }
 
+        val config = TapToPayUxConfiguration.Builder()
+            .tapZone(
+                TapToPayUxConfiguration.TapZone.Manual.Builder()
+                    .indicator(TapToPayUxConfiguration.TapZoneIndicator.FRONT)
+                    .position(TapToPayUxConfiguration.TapZonePosition.Manual(0.3f, 0.7f))
+                    .build()
+            )
+            .colors(
+                TapToPayUxConfiguration.ColorScheme.Builder()
+                    .primary(TapToPayUxConfiguration.Color.Value(0xFF008686))
+                    .success(TapToPayUxConfiguration.Color.Default)
+                    .error(TapToPayUxConfiguration.Color.Resource(android.R.color.holo_red_dark))
+                    .build()
+            )
+            .darkMode(
+                TapToPayUxConfiguration.DarkMode.DARK
+            )
+            .build()
+
+        Terminal.getInstance().setTapToPayUxConfiguration(config)
+
         TerminalApplicationDelegate.onCreate(activity!!.application)
         val delegate = TerminalDelegatePlugin(handlers)
         Terminal.initTerminal(
