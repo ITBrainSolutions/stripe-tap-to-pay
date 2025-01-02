@@ -97,7 +97,16 @@ class TerminalPlugin : FlutterPlugin, ActivityAware, TerminalPlatformApi {
         if (Terminal.isInitialized()) {
             clean()
             return
-        }
+        }        
+
+        TerminalApplicationDelegate.onCreate(activity!!.application)
+        val delegate = TerminalDelegatePlugin(handlers)
+        Terminal.initTerminal(
+            activity!!.applicationContext,
+            if (shouldPrintLogs) LogLevel.VERBOSE else LogLevel.NONE,
+            delegate,
+            delegate
+        )
 
         val config = TapToPayUxConfiguration.Builder()
             .tapZone(
@@ -119,15 +128,6 @@ class TerminalPlugin : FlutterPlugin, ActivityAware, TerminalPlatformApi {
             .build()
 
         Terminal.getInstance().setTapToPayUxConfiguration(config)
-
-        TerminalApplicationDelegate.onCreate(activity!!.application)
-        val delegate = TerminalDelegatePlugin(handlers)
-        Terminal.initTerminal(
-            activity!!.applicationContext,
-            if (shouldPrintLogs) LogLevel.VERBOSE else LogLevel.NONE,
-            delegate,
-            delegate
-        )
     }
 
     override fun onClearCachedCredentials() = terminal.clearCachedCredentials()
